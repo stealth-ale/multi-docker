@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+# We need to use the dev file because that has the dependencies (required for running the tests)
+before_install:
+  - docker build -t alehti/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true alehti/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t alehti/multi-client ./client
+  - docker build -t alehti/multi-nginx ./nginx
+  - docker build -t alehti/multi-server ./server
+  - docker build -t alehti/multi-worker ./worker
+  # Log in to the docker CLI (add env variables in Travis CI UI)
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to Docker hub
+  - docker push alehti/multi-client
+  - docker push alehti/multi-nginx
+  - docker push alehti/multi-server
+  - docker push alehti/multi-worker
