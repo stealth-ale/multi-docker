@@ -27,7 +27,7 @@ deploy:
   region: "us-east-2"
   app: "multi-docker2"
   env: "Multidocker2-env"
-  bucket_name: "elasticbeanstalk-us-east-2-839912558253"
+  bucket_name: "elasticbeanstalk-us-east-2-839912558253" # Travis zips the whole project and stores it into this bucket
   bucket_path: "docker-multi"
   on:
     branch: master
